@@ -1,0 +1,70 @@
+services:
+  - type: web
+    name: copyde-backend
+    runtime: docker
+    repo: https://github.com/real-nakklyu/copyde.git
+    branch: main
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    healthCheckPath: /health
+    autoDeployTrigger: commit
+    envVars:
+      - key: SUPABASE_URL
+        value: https://tjenlijqahcrpfcqrzth.supabase.co
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_JWT_SECRET
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: ENCRYPTION_MASTER_KEY
+        sync: false
+      - key: JWT_AUDIENCE
+        value: authenticated
+      - key: BINANCE_ENV
+        value: testnet
+      - key: DISABLE_LIVE_TRADING
+        value: "true"
+      - key: ENABLE_PRODUCTION_TRADING
+        value: "false"
+      - key: ALLOWED_ORIGINS
+        value: https://frontend-six-pink-77.vercel.app
+      - key: ADMIN_EMAILS
+        value: nakklyu@gmail.com
+
+  - type: worker
+    name: copyde-worker
+    runtime: docker
+    repo: https://github.com/real-nakklyu/copyde.git
+    branch: main
+    dockerfilePath: ./backend/Dockerfile
+    dockerContext: ./backend
+    dockerCommand: python -m app.workers.worker
+    autoDeployTrigger: commit
+    envVars:
+      - key: SUPABASE_URL
+        value: https://tjenlijqahcrpfcqrzth.supabase.co
+      - key: SUPABASE_SERVICE_ROLE_KEY
+        sync: false
+      - key: SUPABASE_JWT_SECRET
+        sync: false
+      - key: DATABASE_URL
+        sync: false
+      - key: REDIS_URL
+        sync: false
+      - key: ENCRYPTION_MASTER_KEY
+        sync: false
+      - key: JWT_AUDIENCE
+        value: authenticated
+      - key: BINANCE_ENV
+        value: testnet
+      - key: DISABLE_LIVE_TRADING
+        value: "true"
+      - key: ENABLE_PRODUCTION_TRADING
+        value: "false"
+      - key: ALLOWED_ORIGINS
+        value: https://frontend-six-pink-77.vercel.app
+      - key: ADMIN_EMAILS
+        value: nakklyu@gmail.com
