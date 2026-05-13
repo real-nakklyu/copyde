@@ -10,6 +10,8 @@ import type { BinanceAccount } from "@/types"
 export default function ConnectBinancePage() {
   const [accounts, setAccounts] = useState<BinanceAccount[]>([])
   const [message, setMessage] = useState("")
+  const [error, setError] = useState("")
+  const [isSaving, setIsSaving] = useState(false)
   const refresh = () => apiFetch<{ accounts: BinanceAccount[] }>("/binance/accounts").then((r) => setAccounts(r.accounts)).catch(() => setAccounts([]))
   useEffect(() => {
     refresh()
@@ -23,19 +25,29 @@ export default function ConnectBinancePage() {
             className="space-y-4"
             onSubmit={async (event) => {
               event.preventDefault()
+              setMessage("")
+              setError("")
+              setIsSaving(true)
               const form = new FormData(event.currentTarget)
-              await apiFetch("/binance/accounts", {
-                method: "POST",
-                body: JSON.stringify({
-                  label: form.get("label"),
-                  api_key: form.get("api_key"),
-                  api_secret: form.get("api_secret"),
-                  environment: form.get("environment"),
-                  ip_restricted_confirmed: form.get("ip_restricted_confirmed") === "on"
+              try {
+                await apiFetch("/binance/accounts", {
+                  method: "POST",
+                  body: JSON.stringify({
+                    label: form.get("label"),
+                    api_key: form.get("api_key"),
+                    api_secret: form.get("api_secret"),
+                    environment: form.get("environment"),
+                    ip_restricted_confirmed: form.get("ip_restricted_confirmed") === "on"
+                  })
                 })
-              })
-              setMessage("Key validated, encrypted, and stored.")
-              refresh()
+                setMessage("Key validated, encrypted, and stored.")
+                await refresh()
+              } catch (err) {
+                const detail = err instanceof Error ? err.message : "Unknown error"
+                setError(`Could not validate/save the key. Check that you are logged in, the backend URL is deployed, and the API key/secret are correct. ${detail}`)
+              } finally {
+                setIsSaving(false)
+              }
             }}
           >
             <RiskWarningBanner compact />
@@ -53,8 +65,11 @@ export default function ConnectBinancePage() {
               <input name="ip_restricted_confirmed" type="checkbox" className="h-4 w-4 accent-binance" />
               I enabled API IP restrictions where available.
             </label>
-            <button className="rounded-md bg-binance px-4 py-2 font-semibold text-black">Validate and save</button>
+            <button disabled={isSaving} className="rounded-md bg-binance px-4 py-2 font-semibold text-black disabled:cursor-not-allowed disabled:opacity-60">
+              {isSaving ? "Validating..." : "Validate and save"}
+            </button>
             {message ? <p className="text-sm text-gain">{message}</p> : null}
+            {error ? <p className="rounded-md border border-loss/40 bg-loss/10 p-3 text-sm text-loss">{error}</p> : null}
           </form>
         </TradingCard>
         <TradingCard title="Connected Keys">
