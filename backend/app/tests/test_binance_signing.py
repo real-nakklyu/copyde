@@ -1,0 +1,18 @@
+from app.core.security import sign_binance_params
+
+
+def test_binance_hmac_signature_matches_official_example():
+    params = {
+        "symbol": "BTCUSDT",
+        "side": "BUY",
+        "type": "LIMIT",
+        "quantity": "1",
+        "price": "9000",
+        "timeInForce": "GTC",
+        "recvWindow": "5000",
+        "timestamp": "1591702613943",
+    }
+    secret = "2b5eb11e18796d12d88f13dc27dbbd02c2cc51ff7059765ed9821957d82bb4d9"
+
+    assert sign_binance_params(params, secret) == "3c661234138461fcc7a7d8746c6558c9842d4e10870d2ecbedf7777cad694af9"
+

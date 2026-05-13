@@ -1,0 +1,16 @@
+.env
+.env.local
+.env.*.local
+node_modules/
+.next/
+__pycache__/
+.pytest_cache/
+.ruff_cache/
+*.pyc
+dist/
+build/
+.venv/
+venv/
+coverage/
+playwright-report/
+*.log

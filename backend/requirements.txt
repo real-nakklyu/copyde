@@ -1,0 +1,12 @@
+fastapi==0.115.14
+uvicorn[standard]==0.34.3
+pydantic-settings==2.10.1
+httpx==0.28.1
+PyJWT[crypto]==2.10.1
+cryptography==45.0.4
+websockets==15.0.1
+apscheduler==3.11.0
+pytest==8.4.1
+pytest-asyncio==1.0.0
+respx==0.22.0
+
