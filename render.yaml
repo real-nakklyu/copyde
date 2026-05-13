@@ -26,9 +26,9 @@ services:
       - key: BINANCE_ENV
         value: testnet
       - key: DISABLE_LIVE_TRADING
-        value: "true"
-      - key: ENABLE_PRODUCTION_TRADING
         value: "false"
+      - key: ENABLE_PRODUCTION_TRADING
+        value: "true"
       - key: ALLOWED_ORIGINS
         value: https://frontend-six-pink-77.vercel.app
       - key: ADMIN_EMAILS
